@@ -1,0 +1,3 @@
+[submodule "unity-TTS-localization-kit"]
+	path = unity-TTS-localization-kit
+	url = https://github.com/Elisu/unity-TTS-localization-kit

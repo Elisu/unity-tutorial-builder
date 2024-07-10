@@ -9,8 +9,7 @@
   "changelogUrl": "https://example.com/changelog.html",
   "licensesUrl": "https://example.com/licensing.html",
   "dependencies": {
-    "com.unity.localization": "1.3.2",
-    "elisu.tts-localization-kit": "0.0.1"
+    "com.unity.localization": "1.3.2"
  },
  "keywords": [
     "tutorial",
