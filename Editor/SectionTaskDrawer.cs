@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -16,7 +17,7 @@ public class SectionTaskDrawer : PropertyDrawer
     {
         var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Packages/elisu.tutorial-builder/Editor/Styles.uss");
 
-        VisualElement root = new VisualElement();
+        VisualElement root = new();
         root.styleSheets.Add(styleSheet);
         root.AddToClassList("panel");
 
@@ -25,34 +26,34 @@ public class SectionTaskDrawer : PropertyDrawer
 
     private VisualElement BuildUI(VisualElement rootElement, SerializedProperty property)
     {
-        VisualElement container = new VisualElement();
+        VisualElement container = new();
         container.AddToClassList("align-vertical");
 
         // Caret + title
-        VisualElement titleContainer = new VisualElement();
+        VisualElement titleContainer = new();
         titleContainer.AddToClassList("align-horizontal");
 
         string propertyPath = property.propertyPath;
         string expandedKey = ExpandedKeyPrefix + propertyPath;
         bool isExpanded = SessionState.GetBool(expandedKey, false);
 
-        Label caretLabel = new Label("▸");
+        Label caretLabel = new("▸");
         caretLabel.style.fontSize = 18;
         caretLabel.AddToClassList(isExpanded ? "rotate-90" : "rotate-0");
 
         // Content
-        VisualElement contentPanel = new VisualElement();
+        VisualElement contentPanel = new();
         contentPanel.AddToClassList("pl-16");
         contentPanel.AddToClassList(isExpanded ? "expanded" : "collapsed");
 
         SerializedProperty taskNameProperty = property.FindPropertyRelative("taskName");
-        PropertyField taskNameField = new PropertyField(taskNameProperty);
+        PropertyField taskNameField = new(taskNameProperty);
         contentPanel.Add(taskNameField);
 
         // Steps
         SerializedProperty stepsProperty = property.FindPropertyRelative("steps");
 
-        var steptListView = new ListView
+        ListView steptListView = new()
         {
             virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
             showFoldoutHeader = true,
@@ -121,6 +122,11 @@ public class SectionTaskDrawer : PropertyDrawer
         stepsProperty.serializedObject.ApplyModifiedProperties();
 
         stepsProperty.serializedObject.Update();
+
+        var targetObject = stepsProperty.serializedObject.targetObject as TutorialSectionBase;
+        targetObject.UpdateCommonGameobjects();
+
+
     }
 
     private void HandleTitleClick(ClickEvent evt, string propertyPath, Label caretLabel, VisualElement contentPanel)
@@ -154,7 +160,6 @@ public class SectionTaskDrawer : PropertyDrawer
 
         if (selectedIndices.Count > 0)
         {
-            selectedIndices.Sort();
             for (int i = selectedIndices.Count - 1; i >= 0; i--)
             {
                 stepsProperty.DeleteArrayElementAtIndex(selectedIndices[i]);
@@ -166,6 +171,7 @@ public class SectionTaskDrawer : PropertyDrawer
         }
 
         stepsProperty.serializedObject.ApplyModifiedProperties();
-        listView.Rebuild(); // Refresh the ListView to show new items
+        stepsProperty.serializedObject.Update();
+
     }
 }

@@ -19,12 +19,12 @@ public class SectionTask
             }
     }
 
-    public void AssignCommonGameObjects(List<GameObjectKey> gameObjects)
+    public void AssignCommonGameObjects(List<GameObjectKey> gameObjects = null)
     {
-
         foreach (var gameObjectTaskStep in steps.OfType<GameObjectTaskStep>())
         {
-            gameObjectTaskStep.gameObjectDictionary = gameObjects;
+            gameObjectTaskStep.gameObjectDictionary = gameObjects.AsReadOnly();
+            gameObjectTaskStep.LoadObject();
         }
     }
 }

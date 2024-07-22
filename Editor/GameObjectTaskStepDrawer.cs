@@ -1,41 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using UnityEditor;
-using UnityEngine;
-using UnityEngine.UIElements;
+//using System.Collections;
+//using System.Collections.Generic;
+//using System.Reflection;
+//using UnityEditor;
+//using UnityEngine;
+//using UnityEngine.UIElements;
 
-[CustomPropertyDrawer(typeof(GameObjectTaskStep), true)]
-public class GameObjectTaskStepDrawer : TaskStepDrawer
-{
-    public override VisualElement CreatePropertyGUI(SerializedProperty property)
-    {
-        VisualElement container = base.CreatePropertyGUI(property);
-            
-            // Add a button
-        Button actionButton = new(() => PerformAction(property))
-        {
-            text = "Load object/s"
-        };
+//[CustomPropertyDrawer(typeof(GameObjectTaskStep), true)]
+//public class GameObjectTaskStepDrawer : TaskStepDrawer
+//{
+//    public override VisualElement CreatePropertyGUI(SerializedProperty property)
+//    {
+//        VisualElement container = base.CreatePropertyGUI(property);
 
-        container.Add(actionButton);
+//        // Add a button
+//        Button actionButton = new(() => PerformAction(property))
+//        {
+//            text = "Load object/s"
+//        };
 
-        return container;
-    }
+//        container.Add(actionButton);
 
-    private void PerformAction(SerializedProperty property)
-    {
+//        return container;
+//    }
 
-        // Find the ObjectTaskStep instance
-        var objectTaskStep = property.managedReferenceValue as GameObjectTaskStep;
+//    private void PerformAction(SerializedProperty property)
+//    {
 
-        if (objectTaskStep != null)
-        {
-            objectTaskStep.LoadObject();
-        }
-        else
-        {
-            Debug.LogWarning("Failed to find ObjectTaskStep instance.");
-        }
-    }
-}
+//        // Find the ObjectTaskStep instance
+//        var objectTaskStep = property.managedReferenceValue as GameObjectTaskStep;
+
+//        if (objectTaskStep != null)
+//        {
+//            Debug.Log("Object loaded");
+//            objectTaskStep.LoadObject();
+//        }
+//        else
+//        {
+//            Debug.LogWarning("Failed to find ObjectTaskStep instance.");
+//        }
+//    }
+//}
