@@ -75,7 +75,8 @@ public class SectionTaskDrawer : PropertyDrawer
         contentPanel.Add(removeStepButton);
 
         // Set the caret label to display the taskName
-        Label title = new(string.IsNullOrEmpty(taskNameProperty.stringValue) ? "Task" : taskNameProperty.stringValue);
+        Label title = new(taskNameProperty.stringValue);
+        title.BindProperty(taskNameProperty.serializedObject);
         title.AddToClassList("header");
 
         titleContainer.Add(caretLabel);

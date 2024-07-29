@@ -19,7 +19,7 @@ public class TutorialSectionBase : MonoBehaviour
         }
     }
 
-    private async void Start()
+    public async void StartAsync()
     {
         foreach (var task in tasks)
         {

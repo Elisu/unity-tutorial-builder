@@ -10,20 +10,24 @@ public class TutorialSectionBaseEditor : Editor
 {
     private SerializedProperty commonObjectsProperty;
     private SerializedProperty tasksProperty;
+    private SerializedProperty onSectionCompleted;
     private TutorialSectionBase tutorialSection;
-    private List<SerializedProperty> commonObjectSerializedObjects = new();
 
 
     private void OnEnable()
     {
         tutorialSection = (TutorialSectionBase)target;
-        commonObjectsProperty = serializedObject.FindProperty("commonObjects");
-        tasksProperty = serializedObject.FindProperty("tasks");
+        commonObjectsProperty = serializedObject.FindProperty(nameof(tutorialSection.commonObjects));
+        tasksProperty = serializedObject.FindProperty(nameof(tutorialSection.tasks));
+        onSectionCompleted = serializedObject.FindProperty(nameof(tutorialSection.OnSectionCompleted));
     }
 
     public override VisualElement CreateInspectorGUI()
     {
         var root = new VisualElement();
+
+        var onSectionCompletedField = new PropertyField(onSectionCompleted);
+        root.Add(onSectionCompletedField);
 
         var commonObjectsListView = new ListView
         {
@@ -55,36 +59,6 @@ public class TutorialSectionBaseEditor : Editor
         };
 
         root.Add(commonObjectsListView);
-
-        // Create a PropertyField for tasks
-        //var tasksListView = new ListView
-        //{
-        //    itemsSource = tutorialSection.tasks,
-        //    virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
-        //    makeItem = () => new PropertyField(),
-        //    showAddRemoveFooter = true,
-        //    showFoldoutHeader = true,
-        //    headerTitle = "Tasks",
-        //    bindItem = (element, i) =>
-        //    {
-        //        var taskField = (PropertyField)element;
-
-        //        // Needs to be updated to register the newly added element, outherwise throws i out of bounds
-        //        tasksProperty.serializedObject.ApplyModifiedProperties();
-        //        tasksProperty.serializedObject.Update();
-        //        var task = tasksProperty.GetArrayElementAtIndex(i);
-
-        //        if (task != null)
-        //        {
-        //            taskField.BindProperty(tasksProperty);
-        //            taskField.RegisterCallback<SerializedPropertyChangeEvent>(e => UpdateCommonGameObjects());
-        //        }
-        //        else
-        //        {
-        //            Debug.LogWarning("Item property is null");
-        //        }
-        //    }
-        //};
 
         var tasksListView = new ListView() {
             itemsSource = tutorialSection.tasks,
