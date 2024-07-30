@@ -1,5 +1,6 @@
+using Elisu.TTSLocalizationKit;
+using Elisu.TutorialBuilder;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,87 +9,91 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-[CustomPropertyDrawer(typeof(SetTextStep))]
-public class SetTextStepDrawer : PropertyDrawer
+namespace Elisu.TutorialBuilderEditor
 {
-    public override VisualElement CreatePropertyGUI(SerializedProperty property)
+    [CustomPropertyDrawer(typeof(SetTextStep))]
+    public class SetTextStepDrawer : PropertyDrawer
     {
-        // Create a root element
-        VisualElement root = new();
-
-        // Get the full type name of the managed reference
-        string fullTypeName = property.managedReferenceFullTypename;
-
-        // Extract the class name from the full type name
-        string className = string.IsNullOrEmpty(fullTypeName) ? "Unknown" : fullTypeName.Substring(fullTypeName.LastIndexOf(' ') + 1);
-
-        Label caretLabel = new(className);
-        root.Add(caretLabel);
-
-        // Create the instance dropdown
-        var instanceProperty = property.FindPropertyRelative("instance");
-
-        var types = GetTextAndAudioManagerTypes();
-
-        var typeNames = new List<string>();
-        foreach (var type in types)
+        public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            typeNames.Add(type.Name);
-        }
+            // Create a root element
+            VisualElement root = new();
 
-        string currentTypeName = instanceProperty.objectReferenceValue != null ? instanceProperty.objectReferenceValue.GetType().Name : typeNames[0];
-        var dropdown = new DropdownField("Options", typeNames, currentTypeName);
+            // Get the full type name of the managed reference
+            string fullTypeName = property.managedReferenceFullTypename;
 
-        dropdown.RegisterValueChangedCallback(evt =>
-        {
-            string selectedTypeName = evt.newValue;
-            Type selectedType = types.FirstOrDefault(type => type.Name == selectedTypeName);
-            if (selectedType != null)
+            // Extract the class name from the full type name
+            string className = string.IsNullOrEmpty(fullTypeName) ? "Unknown" : fullTypeName.Substring(fullTypeName.LastIndexOf(' ') + 1);
+
+            Label caretLabel = new(className);
+            root.Add(caretLabel);
+
+            // Create the instance dropdown
+            var instanceProperty = property.FindPropertyRelative("instance");
+
+            var types = GetTextAndAudioManagerTypes();
+
+            var typeNames = new List<string>();
+            foreach (var type in types)
             {
-                var instance = GetTextAndAudioManagerInstance(selectedType);
-
-                if (instance != null)
-                {
-                    SetInstance(instanceProperty, instance);
-                }
-                
+                typeNames.Add(type.Name);
             }
-        });
 
-        root.Add(dropdown);
+            string currentTypeName = instanceProperty.objectReferenceValue != null ? instanceProperty.objectReferenceValue.GetType().Name : typeNames[0];
+            var dropdown = new DropdownField("Options", typeNames, currentTypeName);
 
-        // Create the key property field
-        var keyProperty = property.FindPropertyRelative("key");
-        var keyField = new PropertyField(keyProperty);
-        root.Add(keyField);
+            dropdown.RegisterValueChangedCallback(evt =>
+            {
+                string selectedTypeName = evt.newValue;
+                Type selectedType = types.FirstOrDefault(type => type.Name == selectedTypeName);
+                if (selectedType != null)
+                {
+                    var instance = GetTextAndAudioManagerInstance(selectedType);
 
-        return root;
-    }
+                    if (instance != null)
+                    {
+                        SetInstance(instanceProperty, instance);
+                    }
 
-    private IEnumerable<Type> GetTextAndAudioManagerTypes()
-    {
-        var baseType = typeof(TextAndAudioManagerBase);
-        return AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(assembly => assembly.GetTypes())
-            .Where(type => type.IsSubclassOf(baseType) && !type.IsAbstract);
-    }
+                }
+            });
 
-    private TextAndAudioManagerBase GetTextAndAudioManagerInstance(Type type)
-    {
-        var property = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-        return property?.GetValue(null) as TextAndAudioManagerBase;
-    }
+            root.Add(dropdown);
 
-    private void SetInstance(SerializedProperty instanceProperty, TextAndAudioManagerBase instance)
-    {
-        if (instanceProperty != null)
-        {
-            instanceProperty.objectReferenceValue = instance;
-            instanceProperty.serializedObject.ApplyModifiedProperties();
+            // Create the key property field
+            var keyProperty = property.FindPropertyRelative("key");
+            var keyField = new PropertyField(keyProperty);
+            root.Add(keyField);
+
+            return root;
         }
-        else
+
+        private IEnumerable<Type> GetTextAndAudioManagerTypes()
         {
-            Debug.LogError("instanceProperty is null.");
+            var baseType = typeof(TextAndAudioManagerBase);
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(assembly => assembly.GetTypes())
+                .Where(type => type.IsSubclassOf(baseType) && !type.IsAbstract);
+        }
+
+        private TextAndAudioManagerBase GetTextAndAudioManagerInstance(Type type)
+        {
+            var property = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            return property?.GetValue(null) as TextAndAudioManagerBase;
+        }
+
+        private void SetInstance(SerializedProperty instanceProperty, TextAndAudioManagerBase instance)
+        {
+            if (instanceProperty != null)
+            {
+                instanceProperty.objectReferenceValue = instance;
+                instanceProperty.serializedObject.ApplyModifiedProperties();
+            }
+            else
+            {
+                Debug.LogError("instanceProperty is null.");
+            }
         }
     }
+
 }

@@ -3,52 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class TutorialManager : MonoBehaviour
+namespace Elisu.TutorialBuilder
 {
-    [SerializeField] TutorialSectionBase[] sections;
-
-    [SerializeField] UnityEvent[] onSectionChanged;
-
-
-    private int currentSectionIndex = 0;
-
-    public async void StartTutorial()
+    public class TutorialManager : MonoBehaviour
     {
-        foreach (var section in sections)
+        [SerializeField] TutorialSectionBase[] sections;
+
+        [SerializeField] UnityEvent[] onSectionChanged;
+
+
+        private int currentSectionIndex = 0;
+
+        public async void StartTutorial()
         {
-            section.OnSectionCompleted.AddListener(StartNextSection);
+            foreach (var section in sections)
+            {
+                section.OnSectionCompleted.AddListener(StartNextSection);
+            }
+
+            sections[currentSectionIndex].StartAsync();
         }
 
-        sections[currentSectionIndex].StartAsync();
-    }
-
-    private void StartNextSection()
-    {
-        StartCoroutine(ContinueTutorial());
-    }
-
-    private bool TutorialCompleted()
-    {
-        if (currentSectionIndex >= sections.Length - 1)
+        private void StartNextSection()
         {
-            return true;
+            StartCoroutine(ContinueTutorial());
         }
 
-        return false;
-    }
-
-    IEnumerator ContinueTutorial()
-    {
-        Debug.Log("Indicate completion");
-
-        if (TutorialCompleted())
+        private bool TutorialCompleted()
         {
-            Debug.Log("Completed");
-            yield break;
+            if (currentSectionIndex >= sections.Length - 1)
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        currentSectionIndex += 1;
-        //NpcController.MoveToView();
-        sections[currentSectionIndex].StartAsync();
+        IEnumerator ContinueTutorial()
+        {
+            Debug.Log("Indicate completion");
+
+            if (TutorialCompleted())
+            {
+                Debug.Log("Completed");
+                yield break;
+            }
+
+            currentSectionIndex += 1;
+            //NpcController.MoveToView();
+            sections[currentSectionIndex].StartAsync();
+        }
     }
+
 }

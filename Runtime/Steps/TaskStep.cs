@@ -4,9 +4,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Serializable]
-public abstract class TaskStep
+namespace Elisu.TutorialBuilder
 {
-    public abstract Task PerformStep();
+    [Serializable]
+    public abstract class TaskStep
+    {
+        public abstract Task PerformStep();
+
+    }
 
 }

@@ -3,34 +3,38 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class WaitForEventStep : GameObjectTaskStep
+namespace Elisu.TutorialBuilder
 {
-    [SerializeField] string objectKey;
-    [SerializeField] UnityEvent waitFor;
-
-    public override void LoadObject()
+    public class WaitForEventStep : GameObjectTaskStep
     {
-        
-    }
+        [SerializeField] string objectKey;
+        [SerializeField] UnityEvent waitFor;
 
-    public override async Task PerformStep()
-    {
-        await WaitForEvent(waitFor);
-    }
-
-    private async Task WaitForEvent(UnityEvent unityEvent)
-    {
-        var tcs = new TaskCompletionSource<bool>();
-
-        void action()
+        public override void LoadObject()
         {
-            unityEvent.RemoveListener(action);
-            tcs.SetResult(true);
+
         }
 
-        unityEvent.AddListener(action);
+        public override async Task PerformStep()
+        {
+            await WaitForEvent(waitFor);
+        }
 
-        await tcs.Task;
+        private async Task WaitForEvent(UnityEvent unityEvent)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            void action()
+            {
+                unityEvent.RemoveListener(action);
+                tcs.SetResult(true);
+            }
+
+            unityEvent.AddListener(action);
+
+            await tcs.Task;
+        }
+
     }
 
 }
