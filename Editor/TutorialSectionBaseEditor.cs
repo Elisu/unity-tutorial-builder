@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 namespace Elisu.TutorialBuilderEditor
 {
-    [CustomEditor(typeof(TutorialSectionBase))]
+    [CustomEditor(typeof(TutorialSectionBase), true)]
     public class TutorialSectionBaseEditor : Editor
     {
         private SerializedProperty commonObjectsProperty;
