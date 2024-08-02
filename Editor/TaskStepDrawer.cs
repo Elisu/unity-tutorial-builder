@@ -16,7 +16,7 @@ namespace Elisu.TutorialBuilderEditor
             string fullTypeName = property.managedReferenceFullTypename;
 
             // Extract the class name from the full type name
-            string className = string.IsNullOrEmpty(fullTypeName) ? "Unknown" : fullTypeName.Substring(fullTypeName.LastIndexOf(' ') + 1);
+            string className = string.IsNullOrEmpty(fullTypeName) ? "Unknown" : fullTypeName[(fullTypeName.LastIndexOf('.') + 1)..];
 
             var propertyField = new PropertyField(property, className);
             root.Add(propertyField);

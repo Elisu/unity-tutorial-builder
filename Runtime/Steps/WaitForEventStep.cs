@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,17 +8,17 @@ namespace Elisu.TutorialBuilder
 {
     public class WaitForEventStep : GameObjectTaskStep
     {
-        [SerializeField] string objectKey;
-        [SerializeField] UnityEvent waitFor;
+        [SerializeField] TutorialEvent waitFor;
 
         public override void LoadObject()
         {
-
+            waitFor.targetObject.loadedGameObject = gameObjectDictionary?.FirstOrDefault((item) => item.Key == waitFor.targetObject.Key)?.loadedGameObject;
+            waitFor.FillMethods();
         }
 
         public override async Task PerformStep()
         {
-            await WaitForEvent(waitFor);
+            //await WaitForEvent(waitFor);
         }
 
         private async Task WaitForEvent(UnityEvent unityEvent)
