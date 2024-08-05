@@ -9,7 +9,7 @@ namespace Elisu.TutorialBuilder
     {
         [SerializeField] TutorialSectionBase[] sections;
 
-        [SerializeField] UnityEvent[] onSectionChanged;
+        [SerializeField] public UnityEvent onSectionChanged;
 
 
         private int currentSectionIndex = 0;

@@ -8,33 +8,20 @@ namespace Elisu.TutorialBuilder
 {
     public class WaitForEventStep : GameObjectTaskStep
     {
-        [SerializeField] TutorialEvent waitFor;
+        [SerializeField] EventSelector waitFor;
 
         public override void LoadObject()
         {
             waitFor.targetObject.loadedGameObject = gameObjectDictionary?.FirstOrDefault((item) => item.Key == waitFor.targetObject.Key)?.loadedGameObject;
-            waitFor.FillMethods();
+            waitFor.FillMembers();
         }
 
         public override async Task PerformStep()
         {
-            //await WaitForEvent(waitFor);
+            await waitFor.WaitForEvent();
         }
 
-        private async Task WaitForEvent(UnityEvent unityEvent)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-
-            void action()
-            {
-                unityEvent.RemoveListener(action);
-                tcs.SetResult(true);
-            }
-
-            unityEvent.AddListener(action);
-
-            await tcs.Task;
-        }
+        
 
     }
 

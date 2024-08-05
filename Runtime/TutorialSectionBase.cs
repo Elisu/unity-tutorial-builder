@@ -9,8 +9,6 @@ namespace Elisu.TutorialBuilder
     {
         public UnityEvent OnSectionCompleted;
 
-        public UnityEvent OnSectionCompleted2;
-
         public List<GameObjectKey> commonObjects = new();
 
         public List<SectionTask> tasks = new();
