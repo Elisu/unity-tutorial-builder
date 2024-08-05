@@ -11,8 +11,6 @@ namespace Elisu.TutorialBuilder
         [SerializeField] GameObjectKey gameObjectKey;
         [SerializeField] bool active;
 
-        private GameObject gameObject;
-
         public override void LoadObject()
         {
             gameObjectKey.loadedGameObject = gameObjectDictionary?.FirstOrDefault((item) => item.Key == gameObjectKey.Key)?.loadedGameObject;
@@ -20,7 +18,7 @@ namespace Elisu.TutorialBuilder
 
         public override async Task PerformStep()
         {
-            gameObject.SetActive(active);
+            gameObjectKey.loadedGameObject.SetActive(active);
         }
     }
 }
