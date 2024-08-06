@@ -41,21 +41,13 @@ namespace Elisu.TutorialBuilderEditor
 
             string currentTypeName = instanceProperty.objectReferenceValue != null ? instanceProperty.objectReferenceValue.GetType().Name : typeNames[0];
             var dropdown = new DropdownField("Options", typeNames, currentTypeName);
+            SetInstance(types.FirstOrDefault(), instanceProperty);
 
             dropdown.RegisterValueChangedCallback(evt =>
             {
                 string selectedTypeName = evt.newValue;
                 Type selectedType = types.FirstOrDefault(type => type.Name == selectedTypeName);
-                if (selectedType != null)
-                {
-                    var instance = GetTextAndAudioManagerInstance(selectedType);
-
-                    if (instance != null)
-                    {
-                        SetInstance(instanceProperty, instance);
-                    }
-
-                }
+                SetInstance(selectedType, instanceProperty);
             });
 
             root.Add(dropdown);
@@ -82,17 +74,28 @@ namespace Elisu.TutorialBuilderEditor
             return property?.GetValue(null) as TextAndAudioManagerBase;
         }
 
-        private void SetInstance(SerializedProperty instanceProperty, TextAndAudioManagerBase instance)
+        private void SetInstance(Type selectedType, SerializedProperty instanceProperty)
         {
-            if (instanceProperty != null)
+            if (selectedType != null)
             {
-                instanceProperty.objectReferenceValue = instance;
-                instanceProperty.serializedObject.ApplyModifiedProperties();
+                var instance = GetTextAndAudioManagerInstance(selectedType);
+
+                if (instance != null)
+                {
+                    if (instanceProperty != null)
+                    {
+                        instanceProperty.objectReferenceValue = instance;
+                        instanceProperty.serializedObject.ApplyModifiedProperties();
+                    }
+                    else
+                    {
+                        Debug.LogError("instanceProperty is null.");
+                    }
+                }
+
             }
-            else
-            {
-                Debug.LogError("instanceProperty is null.");
-            }
+
+            
         }
     }
 

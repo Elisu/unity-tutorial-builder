@@ -7,12 +7,21 @@ namespace Elisu.TutorialBuilder
 {
     public class TutorialManager : MonoBehaviour
     {
+        [SerializeField] bool StartOnPlay = false;
         [SerializeField] TutorialSectionBase[] sections;
 
         [SerializeField] public UnityEvent onSectionChanged;
 
 
         private int currentSectionIndex = 0;
+
+        private void Start()
+        {
+            if (StartOnPlay)
+            {
+                StartTutorial();
+            }
+        }
 
         public async void StartTutorial()
         {
