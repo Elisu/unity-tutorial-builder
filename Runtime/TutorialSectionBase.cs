@@ -13,6 +13,8 @@ namespace Elisu.TutorialBuilder
 
         public List<SectionTask> tasks = new();
 
+        private SectionTask currentTask;
+
         public void UpdateCommonGameobjects()
         {
             foreach (var task in tasks)
@@ -25,7 +27,22 @@ namespace Elisu.TutorialBuilder
         {
             foreach (var task in tasks)
             {
+                currentTask = task;
                 await task.BeginTask();
+            }
+
+            OnSectionCompleted?.Invoke();
+        }
+
+        public void SkipCurrentTask()
+        {
+            if (currentTask != null)
+            {
+                currentTask.SkipTask();
+            }
+            else
+            {
+                Debug.LogError("No current task to skip.");
             }
         }
     }

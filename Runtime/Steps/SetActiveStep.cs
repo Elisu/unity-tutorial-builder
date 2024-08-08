@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ namespace Elisu.TutorialBuilder
             gameObjectKey.loadedGameObject = gameObjectDictionary?.FirstOrDefault((item) => item.Key == gameObjectKey.Key)?.loadedGameObject;
         }
 
-        public override async Task PerformStep()
+        public override async Task PerformStep(CancellationToken cancellationToken)
         {
             gameObjectKey.loadedGameObject.SetActive(active);
         }

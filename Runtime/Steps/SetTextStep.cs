@@ -1,5 +1,6 @@
 using Elisu.TTSLocalizationKit;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Elisu.TutorialBuilder
 
         public TextAndAudioManagerBase instance;
 
-        public override async Task PerformStep()
+        public override async Task PerformStep(CancellationToken cancellationToken)
         {
             await instance.SetEntryAsync(key);
         }

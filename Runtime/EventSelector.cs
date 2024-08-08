@@ -39,26 +39,5 @@ namespace Elisu.TutorialBuilder
             SetMemberNames();
         }
 
-        public async Task WaitForEvent()
-        {
-            if (selectedMember == null)
-            {
-                Debug.LogWarning("Cannot await event that is null");
-                return;
-            }
-
-            var tcs = new TaskCompletionSource<bool>();
-
-            void action()
-            {
-                selectedMember.RemoveListener(action);
-                tcs.SetResult(true);
-            }
-
-            selectedMember.AddListener(action);
-
-            await tcs.Task;
-        }
-
     }
 }

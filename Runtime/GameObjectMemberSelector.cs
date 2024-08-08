@@ -25,7 +25,8 @@ namespace Elisu.TutorialBuilder
 
         protected void SetMemberNames()
         {
-            MemberNames = availableMembers.Keys.ToList();
+            MemberNames.Clear();
+            MemberNames.AddRange(availableMembers.Keys.ToList());
         }
     }
 }

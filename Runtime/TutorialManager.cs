@@ -59,8 +59,23 @@ namespace Elisu.TutorialBuilder
             }
 
             currentSectionIndex += 1;
-            //NpcController.MoveToView();
             sections[currentSectionIndex].StartAsync();
+        }
+
+        public void SkipCurrentTask()
+        {
+            if (tutorialSection != null)
+            {
+                sections[currentSectionIndex].SkipCurrentTask();
+            }
+        }
+
+        void SkipCurrentSection()
+        {
+            if (tutorialSection != null)
+            {
+                tutorialSection.SkipCurrentTask();
+            }
         }
     }
 

@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace Elisu.TutorialBuilder
             methodSelector.FillMembers();
         }
 
-        public override Task PerformStep()
+        public override Task PerformStep(CancellationToken cancellationToken)
         {
             methodSelector.InvokeMethod();
             return Task.CompletedTask;
