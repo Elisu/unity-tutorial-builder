@@ -15,7 +15,7 @@ namespace Elisu.TutorialBuilder
 
         public override async Task PerformStep(CancellationToken cancellationToken)
         {
-            await instance.SetEntryAsync(key);
+            await instance.SetEntryAsync(key:key, cancellationToken: cancellationToken);
         }
     }
 
