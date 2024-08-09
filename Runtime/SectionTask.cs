@@ -15,15 +15,16 @@ namespace Elisu.TutorialBuilder
 
         private CancellationTokenSource cancellationTokenSource;
 
-        public async Task BeginTask()
+        public async Task BeginTask(CancellationToken externalCancellationToken)
         {
             cancellationTokenSource = new CancellationTokenSource();
+            var linkedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token, externalCancellationToken);
 
             try
             {
                 foreach (var step in steps)
                 {
-                    await step.PerformStep(cancellationTokenSource.Token);
+                    await step.PerformStep(linkedCancellationTokenSource.Token);
                 }
             }
             catch (OperationCanceledException)
@@ -35,6 +36,7 @@ namespace Elisu.TutorialBuilder
         public void SkipTask()
         {
             cancellationTokenSource?.Cancel();
+            Debug.Log("Task was skipped");
         }
 
         public void AssignCommonGameObjects(List<GameObjectKey> gameObjects = null)

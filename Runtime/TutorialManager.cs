@@ -64,7 +64,7 @@ namespace Elisu.TutorialBuilder
 
         public void SkipCurrentTask()
         {
-            if (tutorialSection != null)
+            if (TutorialCompleted() == false)
             {
                 sections[currentSectionIndex].SkipCurrentTask();
             }
@@ -72,9 +72,9 @@ namespace Elisu.TutorialBuilder
 
         void SkipCurrentSection()
         {
-            if (tutorialSection != null)
+            if (TutorialCompleted() == false)
             {
-                tutorialSection.SkipCurrentTask();
+                sections[currentSectionIndex].SkipSection();
             }
         }
     }

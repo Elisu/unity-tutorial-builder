@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,6 +17,8 @@ namespace Elisu.TutorialBuilder
 
         private SectionTask currentTask;
 
+        private CancellationTokenSource sectionCancellationTokenSource;
+
         public void UpdateCommonGameobjects()
         {
             foreach (var task in tasks)
@@ -25,13 +29,21 @@ namespace Elisu.TutorialBuilder
 
         public async void StartAsync()
         {
-            foreach (var task in tasks)
-            {
-                currentTask = task;
-                await task.BeginTask();
-            }
+            sectionCancellationTokenSource = new CancellationTokenSource();
 
-            OnSectionCompleted?.Invoke();
+            try
+            {
+                foreach (var task in tasks)
+                {
+                    currentTask = task;
+                    await task.BeginTask(sectionCancellationTokenSource.Token);
+                }
+                OnSectionCompleted?.Invoke();
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Section was cancelled");
+            }
         }
 
         public void SkipCurrentTask()
@@ -44,6 +56,11 @@ namespace Elisu.TutorialBuilder
             {
                 Debug.LogError("No current task to skip.");
             }
+        }
+
+        public void SkipSection()
+        {
+            sectionCancellationTokenSource?.Cancel();
         }
     }
 
