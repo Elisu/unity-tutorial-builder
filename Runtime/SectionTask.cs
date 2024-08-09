@@ -31,6 +31,13 @@ namespace Elisu.TutorialBuilder
             {
                 Debug.Log("Task was cancelled");
             }
+            finally
+            {
+                linkedCancellationTokenSource.Dispose();
+                cancellationTokenSource.Dispose();
+            }
+
+            
         }
 
         public void SkipTask()

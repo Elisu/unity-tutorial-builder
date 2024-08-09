@@ -44,6 +44,10 @@ namespace Elisu.TutorialBuilder
             {
                 Debug.Log("Section was cancelled");
             }
+            finally
+            {
+                sectionCancellationTokenSource.Dispose();
+            }
         }
 
         public void SkipCurrentTask()
