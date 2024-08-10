@@ -66,6 +66,8 @@ namespace Elisu.TutorialBuilderEditor
                 itemsSource = tutorialSection.tasks,
                 virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
                 showAddRemoveFooter = true,
+                reorderable = true,
+                reorderMode = ListViewReorderMode.Animated,
                 showFoldoutHeader = true,
                 headerTitle = "Tasks",
                 makeItem = () => new PropertyField(),

@@ -14,6 +14,7 @@ namespace Elisu.TutorialBuilder
 
 
         private int currentSectionIndex = 0;
+        bool tutorialCompleted = false;
 
         private void Start()
         {
@@ -55,6 +56,7 @@ namespace Elisu.TutorialBuilder
             if (TutorialCompleted())
             {
                 Debug.Log("Completed");
+                tutorialCompleted = true;
                 yield break;
             }
 
@@ -64,7 +66,7 @@ namespace Elisu.TutorialBuilder
 
         public void SkipCurrentTask()
         {
-            if (TutorialCompleted() == false)
+            if (tutorialCompleted == false)
             {
                 sections[currentSectionIndex].SkipCurrentTask();
             }
@@ -72,7 +74,7 @@ namespace Elisu.TutorialBuilder
 
         void SkipCurrentSection()
         {
-            if (TutorialCompleted() == false)
+            if (tutorialCompleted == false)
             {
                 sections[currentSectionIndex].SkipSection();
             }
