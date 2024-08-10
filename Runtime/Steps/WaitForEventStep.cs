@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -7,6 +8,7 @@ using UnityEngine.Events;
 
 namespace Elisu.TutorialBuilder
 {
+    [Serializable]
     public class WaitForEventStep : GameObjectTaskStep
     {
         [SerializeField] EventSelector waitFor;
