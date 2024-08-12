@@ -11,7 +11,7 @@ namespace Elisu.TutorialBuilder
     [Serializable]
     public abstract class GameObjectMemberSelector<T> : GameObjectMemberSelectorBase
     {
-        [SerializeField] public GameObjectKey targetObject;
+        [SerializeField] public GameObjectKey targetObject = new();
 
         public Dictionary<string, T> availableMembers = new();
 
@@ -21,12 +21,18 @@ namespace Elisu.TutorialBuilder
         public override void SetSelectedMember(string name)
         {
             selectedMember = availableMembers.GetValueOrDefault(name);
+            selectedMemberName = name;
         }
 
         protected void SetMemberNames()
         {
             MemberNames.Clear();
             MemberNames.AddRange(availableMembers.Keys.ToList());
+        }
+
+        public override string GetSelectedMemberName()
+        {
+            return selectedMemberName;
         }
     }
 }

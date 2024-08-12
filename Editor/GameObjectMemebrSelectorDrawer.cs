@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using Elisu.TutorialBuilder;
+using System.Reflection;
+using System;
 
 [CustomPropertyDrawer(typeof(GameObjectMemberSelector<>), true)]
 public class GameObjectMemebrSelectorDrawer : PropertyDrawer
@@ -17,8 +19,9 @@ public class GameObjectMemebrSelectorDrawer : PropertyDrawer
         container.Add(targetObjectSerializedField);
 
         // Add a method selection dropdown
-        var target = (GameObjectMemberSelectorBase)property.boxedValue;
-        var eventsDropdown = new DropdownField(target.MemberNames, 0);
+        var target = (GameObjectMemberSelectorBase)property.managedReferenceValue;
+        target.FillMembers();
+        var eventsDropdown = new DropdownField(target.MemberNames, target.MemberNames.IndexOf(target.GetSelectedMemberName()));
         container.Add(eventsDropdown);
 
         // Update method list based on the selected GameObject

@@ -39,9 +39,13 @@ namespace Elisu.TutorialBuilderEditor
                 typeNames.Add(type.Name);
             }
 
+            if (instanceProperty.objectReferenceValue == null)
+            {
+                SetInstance(types.FirstOrDefault(), instanceProperty);
+            }
+
             string currentTypeName = instanceProperty.objectReferenceValue != null ? instanceProperty.objectReferenceValue.GetType().Name : typeNames[0];
             var dropdown = new DropdownField("Options", typeNames, currentTypeName);
-            SetInstance(types.FirstOrDefault(), instanceProperty);
 
             dropdown.RegisterValueChangedCallback(evt =>
             {

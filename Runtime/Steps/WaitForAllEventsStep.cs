@@ -10,15 +10,24 @@ namespace Elisu.TutorialBuilder
     [Serializable]
     public class WaitForAllEventsStep : GameObjectTaskStep
     {
-        [SerializeField] EventSelector[] waitFor;
+        [SerializeReference] List<EventSelector> waitFor = new();
 
         public override void LoadObject()
         {
-            foreach (EventSelector selector in waitFor)
+            for (int i = 0; i < waitFor.Count; i++)
             {
+                var selector = waitFor[i];
+
+                if (selector == null)
+                {
+                    selector = new EventSelector();
+                    waitFor[i] = selector; // Assign back to the list
+                }
+
                 selector.targetObject.loadedGameObject = gameObjectDictionary?.FirstOrDefault((item) => item.Key == selector.targetObject.Key)?.loadedGameObject;
                 selector.FillMembers();
             }
+
         }
 
         public override async Task PerformStep(CancellationToken cancellationToken)

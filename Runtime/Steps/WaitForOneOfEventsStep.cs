@@ -11,7 +11,7 @@ namespace Elisu.TutorialBuilder
     [Serializable]
     public class WaitForOneOfEventsStep : GameObjectTaskStep
     {
-        [SerializeField] EventSelector[] waitFor;
+        [SerializeReference] List<EventSelector> waitFor = new();
 
         public override void LoadObject()
         {
@@ -30,10 +30,10 @@ namespace Elisu.TutorialBuilder
 
         private async Task WaitForOneOfEvents(CancellationToken cancellationToken)
         {
-            var tcsList = new TaskCompletionSource<bool>[waitFor.Length];
-            var tasks = new Task[waitFor.Length];
+            var tcsList = new TaskCompletionSource<bool>[waitFor.Count];
+            var tasks = new Task[waitFor.Count];
 
-            for (int i = 0; i < waitFor.Length; i++)
+            for (int i = 0; i < waitFor.Count; i++)
             {
                 int localIndex = i; // Local copy of i
 
@@ -53,7 +53,7 @@ namespace Elisu.TutorialBuilder
                     tcs.SetResult(true);
 
                     // Remove other listeners to prevent multiple completions
-                    for (int j = 0; j < waitFor.Length; j++)
+                    for (int j = 0; j < waitFor.Count; j++)
                     {
                         if (localIndex != j)
                         {
@@ -66,7 +66,7 @@ namespace Elisu.TutorialBuilder
                 tasks[localIndex] = tcs.Task;
 
                 // Add listeners to cancel other TCS when one completes
-                for (int j = 0; j < waitFor.Length; j++)
+                for (int j = 0; j < waitFor.Count; j++)
                 {
                     if (localIndex != j)
                     {
@@ -89,7 +89,7 @@ namespace Elisu.TutorialBuilder
             finally
             {
                 // Cleanup: Remove all listeners
-                for (int i = 0; i < waitFor.Length; i++)
+                for (int i = 0; i < waitFor.Count; i++)
                 {
                     waitFor[i].selectedMember.RemoveAllListeners();
                 }

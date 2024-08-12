@@ -11,7 +11,7 @@ namespace Elisu.TutorialBuilder
     [Serializable]
     public class WaitForEventStep : GameObjectTaskStep
     {
-        [SerializeField] EventSelector waitFor;
+        [SerializeReference] EventSelector waitFor = new();
 
         public override void LoadObject()
         {
