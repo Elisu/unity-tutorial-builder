@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Elisu.TutorialBuilder
 {
     [Serializable]
-    public class WaitForConditionsStep : GameObjectTaskStep
+    public class WaitForAllConditionsStep : GameObjectTaskStep
     {
         [SerializeReference] List<BoolSelector> waitFor = new();
 
