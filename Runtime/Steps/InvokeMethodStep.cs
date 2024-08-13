@@ -7,7 +7,7 @@ namespace Elisu.TutorialBuilder
 {
     public class InvokeMethodStep : GameObjectTaskStep
     {
-        [SerializeField] MethodSelector methodSelector;
+        [SerializeReference] MethodSelector methodSelector = new();
 
         public override void LoadObject()
         {
