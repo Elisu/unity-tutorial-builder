@@ -37,7 +37,7 @@ namespace Elisu.TutorialBuilder
             for (int i = 0; i < waitFor.Count; i++)
             {
                 int localIndex = i; // Capture the current index
-                conditions.Add(() => waitFor[localIndex].selectedMember);
+                conditions.Add(() => waitFor[localIndex].SelectedMember);
             }
 
             try

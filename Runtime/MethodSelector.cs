@@ -38,7 +38,7 @@ namespace Elisu.TutorialBuilder
 
         public void InvokeMethod()
         {
-            selectedMember.Invoke(targetObject.loadedGameObject, null);
+            SelectedMember.Invoke(targetObject.loadedGameObject, null);
         }
     }
 }

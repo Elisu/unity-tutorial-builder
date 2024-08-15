@@ -15,12 +15,11 @@ namespace Elisu.TutorialBuilder
 
         public Dictionary<string, T> availableMembers = new();
 
-        public T selectedMember = default;
+        public T SelectedMember { get => availableMembers.GetValueOrDefault(selectedMemberName); }
 
 
         public override void SetSelectedMember(string name)
         {
-            selectedMember = availableMembers.GetValueOrDefault(name);
             selectedMemberName = name;
         }
 

@@ -45,7 +45,7 @@ namespace Elisu.TutorialBuilder
             {
                 int localIndex = i; // Local copy of i
 
-                if (waitFor[localIndex].selectedMember == null)
+                if (waitFor[localIndex].SelectedMember == null)
                 {
                     Debug.LogWarning("Cannot await event that is null");
                     continue;
@@ -57,7 +57,7 @@ namespace Elisu.TutorialBuilder
 
                 void action()
                 {
-                    waitFor[localIndex].selectedMember.RemoveListener(action);
+                    waitFor[localIndex].SelectedMember.RemoveListener(action);
                     tcs.SetResult(true);
 
                     // Remove other listeners to prevent multiple completions
@@ -65,12 +65,12 @@ namespace Elisu.TutorialBuilder
                     {
                         if (localIndex != j)
                         {
-                            waitFor[j].selectedMember.RemoveListener(tcsList[j].SetCanceled);
+                            waitFor[j].SelectedMember.RemoveListener(tcsList[j].SetCanceled);
                         }
                     }
                 }
 
-                waitFor[localIndex].selectedMember.AddListener(action);
+                waitFor[localIndex].SelectedMember.AddListener(action);
                 tasks[localIndex] = tcs.Task;
 
                 // Add listeners to cancel other TCS when one completes
@@ -78,7 +78,7 @@ namespace Elisu.TutorialBuilder
                 {
                     if (localIndex != j)
                     {
-                        waitFor[j].selectedMember.AddListener(tcs.SetCanceled);
+                        waitFor[j].SelectedMember.AddListener(tcs.SetCanceled);
                     }
                 }
 
@@ -86,7 +86,7 @@ namespace Elisu.TutorialBuilder
                 cancellationToken.Register(() =>
                 {
                     tcs.TrySetCanceled();
-                    waitFor[localIndex].selectedMember.RemoveListener(action);
+                    waitFor[localIndex].SelectedMember.RemoveListener(action);
                 });
             }
 
@@ -99,7 +99,7 @@ namespace Elisu.TutorialBuilder
                 // Cleanup: Remove all listeners
                 for (int i = 0; i < waitFor.Count; i++)
                 {
-                    waitFor[i].selectedMember.RemoveAllListeners();
+                    waitFor[i].SelectedMember.RemoveAllListeners();
                 }
             }
 

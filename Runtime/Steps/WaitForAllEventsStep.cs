@@ -41,7 +41,7 @@ namespace Elisu.TutorialBuilder
 
             foreach (var selector in waitFor)
             {
-                if (selector.selectedMember == null)
+                if (selector.SelectedMember == null)
                 {
                     Debug.LogWarning("Cannot await event that is null");
                     continue;
@@ -51,11 +51,11 @@ namespace Elisu.TutorialBuilder
 
                 void action()
                 {
-                    selector.selectedMember.RemoveListener(action);
+                    selector.SelectedMember.RemoveListener(action);
                     tcs.SetResult(true);
                 }
 
-                selector.selectedMember.AddListener(action);
+                selector.SelectedMember.AddListener(action);
 
                 // Add the task to the list
                 tasks.Add(tcs.Task);
@@ -63,7 +63,7 @@ namespace Elisu.TutorialBuilder
                 // Register cancellation to remove the listener and cancel the task
                 cancellationToken.Register(() =>
                 {
-                    selector.selectedMember.RemoveListener(action);
+                    selector.SelectedMember.RemoveListener(action);
                     tcs.TrySetCanceled();
                 });
             }
@@ -78,7 +78,7 @@ namespace Elisu.TutorialBuilder
                 // Cleanup: Remove all listeners
                 foreach (var selector in waitFor)
                 {
-                    selector.selectedMember?.RemoveAllListeners();
+                    selector.SelectedMember?.RemoveAllListeners();
                 }
             }
 

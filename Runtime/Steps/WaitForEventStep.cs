@@ -26,7 +26,7 @@ namespace Elisu.TutorialBuilder
 
         public async Task WaitForEvent(CancellationToken cancellationToken)
         {
-            if (waitFor.selectedMember == null)
+            if (waitFor.SelectedMember == null)
             {
                 Debug.LogWarning("Cannot await event that is null");
                 return;
@@ -36,18 +36,18 @@ namespace Elisu.TutorialBuilder
 
             void action()
             {
-                waitFor.selectedMember.RemoveListener(action);
+                waitFor.SelectedMember.RemoveListener(action);
                 tcs.SetResult(true);
             }
 
             // Register cancellation to remove the listener and cancel the TCS
             cancellationToken.Register(() =>
             {
-                waitFor.selectedMember.RemoveListener(action);
+                waitFor.SelectedMember.RemoveListener(action);
                 tcs.TrySetCanceled();
             });
 
-            waitFor.selectedMember.AddListener(action);
+            waitFor.SelectedMember.AddListener(action);
 
             try
             {
