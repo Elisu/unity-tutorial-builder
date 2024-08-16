@@ -1,5 +1,8 @@
+using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,18 +10,21 @@ namespace Elisu.TutorialBuilder
 {
     public class TutorialManager : MonoBehaviour
     {
-        [SerializeField] bool StartOnPlay = false;
+        [SerializeField] bool startOnPlay = false;
+        [SerializeField] bool trackAnalytics = true;
         [SerializeField] TutorialSectionBase[] sections;
 
-        [SerializeField] public UnityEvent onSectionChanged;
+        [SerializeField] public UnityEvent OnSectionChanged;
 
 
-        private int currentSectionIndex = 0;
+        int currentSectionIndex = -1;
         bool tutorialCompleted = false;
+
+        private Dictionary<string, List<KeyValuePair<string, double>>> allTaskTimes = new();
 
         private void Start()
         {
-            if (StartOnPlay)
+            if (startOnPlay)
             {
                 StartTutorial();
             }
@@ -26,17 +32,21 @@ namespace Elisu.TutorialBuilder
 
         public async void StartTutorial()
         {
-            foreach (var section in sections)
-            {
-                section.OnSectionCompleted.AddListener(StartNextSection);
-            }
-
-            sections[currentSectionIndex].StartAsync();
+            StartTorialLoopAsync();
         }
 
-        private void StartNextSection()
+        private async void StartTorialLoopAsync()
         {
-            StartCoroutine(ContinueTutorial());
+            for (int i = 0; i < sections.Length; i++)
+            {
+                currentSectionIndex = i;
+                var taskTimes = await sections[currentSectionIndex].StartAsync();
+                allTaskTimes[sections[currentSectionIndex].name] = taskTimes;
+                OnSectionChanged?.Invoke();
+            }
+
+            tutorialCompleted = true;
+            SaveTaskTimesToFile();
         }
 
         private bool TutorialCompleted()
@@ -47,21 +57,6 @@ namespace Elisu.TutorialBuilder
             }
 
             return false;
-        }
-
-        IEnumerator ContinueTutorial()
-        {
-            Debug.Log("Indicate completion");
-
-            if (TutorialCompleted())
-            {
-                Debug.Log("Completed");
-                tutorialCompleted = true;
-                yield break;
-            }
-
-            currentSectionIndex += 1;
-            sections[currentSectionIndex].StartAsync();
         }
 
         public void SkipCurrentTask()
@@ -77,6 +72,32 @@ namespace Elisu.TutorialBuilder
             if (tutorialCompleted == false)
             {
                 sections[currentSectionIndex].SkipSection();
+            }
+        }
+
+        // Save all task times to a single JSON file
+        private void SaveTaskTimesToFile()
+        {
+            // Get the current timestamp formatted as "yyyy-MM-dd_HH-mm" (year, month, day, hour, minute)
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
+
+            // Append the timestamp to the filename
+            string fileName = $"tutorial_task_times_{timestamp}.json";
+            string filePath = Path.Combine(Application.persistentDataPath, fileName);
+
+            try
+            {
+                // Serialize the task times dictionary to JSON
+                string json = JsonConvert.SerializeObject(allTaskTimes, Formatting.Indented);
+
+                File.WriteAllText(filePath, json);
+
+                Debug.Log($"All task times saved to {filePath}");
+            }
+            catch (Exception ex)
+            {
+                // Log the error message if there was an issue
+                Debug.LogError($"Failed to save task times: {ex.Message}");
             }
         }
     }

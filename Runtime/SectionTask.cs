@@ -10,7 +10,7 @@ namespace Elisu.TutorialBuilder
     [Serializable]
     public class SectionTask
     {
-        [SerializeField] string taskName = "";
+        [SerializeField] public string taskName = "";
         [SerializeReference] public List<TaskStep> steps = new();
 
         private CancellationTokenSource cancellationTokenSource;

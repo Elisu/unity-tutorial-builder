@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Unity.Collections.LowLevel.Unsafe;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.Events;
+using Debug = UnityEngine.Debug;
 
 namespace Elisu.TutorialBuilder
 {
@@ -19,6 +23,7 @@ namespace Elisu.TutorialBuilder
 
         private CancellationTokenSource sectionCancellationTokenSource;
 
+
         public void UpdateCommonGameobjects()
         {
             foreach (var task in tasks)
@@ -27,27 +32,44 @@ namespace Elisu.TutorialBuilder
             }
         }
 
-        public async void StartAsync()
+        public async Task<List<KeyValuePair<string, double>>> StartAsync()
         {
             sectionCancellationTokenSource = new CancellationTokenSource();
+            
+            var taskTimes = new List<KeyValuePair<string, double>>();
+            Stopwatch stopwatch = new();
 
             try
             {
+
                 foreach (var task in tasks)
                 {
                     currentTask = task;
+
+                    // Start timing the task
+                    stopwatch.Reset();
+                    stopwatch.Start();
+
                     await task.BeginTask(sectionCancellationTokenSource.Token);
+
+                    // Stop timing and store the result as a key-value pair
+                    stopwatch.Stop();
+                    taskTimes.Add(new KeyValuePair<string, double>(task.taskName, stopwatch.Elapsed.TotalSeconds));
                 }
-                OnSectionCompleted?.Invoke();
             }
             catch (OperationCanceledException)
             {
                 Debug.Log("Section was cancelled");
+                stopwatch.Stop();
+                taskTimes.Add(new KeyValuePair<string, double>(currentTask.taskName, -1));
             }
             finally
             {
                 sectionCancellationTokenSource.Dispose();
             }
+
+            // Return the list of task names and times
+            return taskTimes;
         }
 
         public void SkipCurrentTask()
