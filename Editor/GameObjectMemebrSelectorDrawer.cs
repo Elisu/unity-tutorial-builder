@@ -22,6 +22,7 @@ public class GameObjectMemebrSelectorDrawer : PropertyDrawer
         var target = (GameObjectMemberSelectorBase)property.managedReferenceValue;
         target.FillMembers();
         var eventsDropdown = new DropdownField(target.MemberNames, target.MemberNames.IndexOf(target.GetSelectedMemberName()));
+        target.SetSelectedMember(target.GetSelectedMemberName());
         container.Add(eventsDropdown);
 
         // Update method list based on the selected GameObject
