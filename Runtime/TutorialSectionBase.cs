@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.Events;
@@ -32,10 +31,11 @@ namespace Elisu.TutorialBuilder
             }
         }
 
-        public async Task<List<KeyValuePair<string, double>>> StartAsync()
+        public async Task<List<KeyValuePair<string, double>>> StartAsync(CancellationToken externalCancellationToken)
         {
             sectionCancellationTokenSource = new CancellationTokenSource();
-            
+            var linkedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(sectionCancellationTokenSource.Token, externalCancellationToken);
+
             var taskTimes = new List<KeyValuePair<string, double>>();
             Stopwatch stopwatch = new();
 
@@ -50,7 +50,7 @@ namespace Elisu.TutorialBuilder
                     stopwatch.Reset();
                     stopwatch.Start();
 
-                    await task.BeginTask(sectionCancellationTokenSource.Token);
+                    await task.BeginTask(linkedCancellationTokenSource.Token);
 
                     // Stop timing and store the result as a key-value pair
                     stopwatch.Stop();
@@ -65,6 +65,7 @@ namespace Elisu.TutorialBuilder
             }
             finally
             {
+                linkedCancellationTokenSource.Dispose();
                 sectionCancellationTokenSource.Dispose();
             }
 

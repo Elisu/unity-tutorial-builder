@@ -1,5 +1,7 @@
 using Newtonsoft.Json;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -32,15 +34,28 @@ namespace Elisu.TutorialBuilder
 
         public async void StartTutorial()
         {
-            StartTorialLoopAsync();
+            try
+            {
+                await StartTorialLoopAsync(Application.exitCancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Cancelled on application exit.");
+            }
         }
 
-        private async void StartTorialLoopAsync()
+        private async Task StartTorialLoopAsync(CancellationToken token)
         {
             for (int i = 0; i < sections.Length; i++)
             {
+                // Check for cancellation before proceeding
+                token.ThrowIfCancellationRequested();
+
                 currentSectionIndex = i;
-                var taskTimes = await sections[currentSectionIndex].StartAsync();
+                var taskTimes = await sections[currentSectionIndex].StartAsync(token);
+
+                token.ThrowIfCancellationRequested();
+
                 allTaskTimes[sections[currentSectionIndex].name] = taskTimes;
                 OnSectionChanged?.Invoke();
             }
